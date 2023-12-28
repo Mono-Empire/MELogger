@@ -1,5 +1,31 @@
 # MELogger
 
+Installation
+--------------
+
+You can install the package under your `Project / Package Dependencies` settings. Or if you are specifying it as a dependency for another package you can add the dependency in `Package.swift`:
+
+    //...
+    dependencies: [
+        .package(
+            url: "git@github.com:Mono-Empire/MELogger.git",
+            from: Version("1.0.0")
+        )
+    ],
+    targets: [
+        .target(
+            name: "YourProject",
+            dependencies: [
+                .product(
+                    name: "MELogger",
+                    package: "MELogger"
+                ),
+            ]
+        ),
+        //...
+    ]
+    //...
+
 Basic usage
 --------------
 
