@@ -65,7 +65,7 @@ final public class MELoggerDestinationManager: @unchecked Sendable {
     /// - Parameter destinationType: The class of the destination to remove.
     public func remove(type destinationType: MELoggerDestination.Type) {
         self.loggerDestinationListMutatingLock.sync {
-            self.destinations = []
+            self.destinations.removeAll(where: { type(of: $0) == destinationType })
         }
     }
 

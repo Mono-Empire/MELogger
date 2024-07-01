@@ -115,9 +115,18 @@ class MELoggerTests: XCTestCase {
         XCTAssertEqual(1, anotherMockLogDestination.loggedMessages.count)
         XCTAssertNotNil(self.mockLogDestination.lastLoggedMessage)
         XCTAssertEqual(2, self.mockLogDestination.loggedMessages.count)
-        
     }
-    
+
+    func testAddRemoveLoggerDestionations() {
+        XCTAssertEqual(MELoggerDestinationManager.shared.getDestinations().count, 0)
+        let fileLoggerDestination = FileLoggerDestination()
+        MELoggerDestinationManager.shared.add(self.mockLogDestination)
+        MELoggerDestinationManager.shared.add(fileLoggerDestination)
+        XCTAssertEqual(MELoggerDestinationManager.shared.getDestinations().count, 2)
+        MELoggerDestinationManager.shared.remove(type: FileLoggerDestination.self)
+        XCTAssertEqual(MELoggerDestinationManager.shared.getDestinations().count, 1)
+    }
+
     func testConsoleLoggerDestination() {
 
         let settings = ConsoleLoggerDestination.Settings(isEnabled: true)
