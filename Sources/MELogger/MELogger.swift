@@ -59,31 +59,22 @@ public struct MELogger {
     let label: String
     
     /// Destinations for logging, specific to this logger
-    let destinations: [MELoggerDestination]
-
-    /// Shared destinations enabled
-    let sharedDestinationsEnabled: Bool
-    
-    /// Destinations shared among all loggers
     ///
-    /// Defaults to logging to console.
-    public static var sharedDestinations: [MELoggerDestination] = [ConsoleLoggerDestination()]
-    
+    /// If nil, it means there are no additional destinations.
+    let destinationManager: LoggerDestinationManager?
+
     // MARK: - Public Methods
 
     /// Initializer
-    /// - Parameter label: The label displayed when logging (can be the name of the component)
-    /// - Parameter destinations: An optional list of log destinations such as the console, a file, etc. specific to this logger
-    /// - Parameter sharedDestinationsEnabled: If set to true (the default) log messages will be sent to shared destinations as well. You should leave this true unless you want something specific or are for example using a logger for unit tests.
+    /// - Parameter label: The label displayed when logging (can be the name of the component).
+    /// - Parameter destinationManager: An optional set of log destinations such as the console, a file, etc. specific to this logger. If left nil (the default) the shared destinations will be used.
     public init(
         label: String,
-        destinations: [MELoggerDestination] = [],
-        sharedDestinationsEnabled: Bool = true
+        destinationManager: LoggerDestinationManager? = nil
     ) {
         
         self.label = label
-        self.destinations = destinations
-        self.sharedDestinationsEnabled = sharedDestinationsEnabled
+        self.destinationManager = destinationManager
     }
 
     /// Appropriate for messages that contain information normally of use only when tracing the execution
@@ -208,9 +199,8 @@ public struct MELogger {
     ) {
                 
         // Shared destinations
-        if self.sharedDestinationsEnabled {
-
-            MELogger.sharedDestinations.forEach {
+        if LoggerDestinationManager.shared.isEnabled() {
+            LoggerDestinationManager.shared.getDestinations().forEach {
                 $0.log(
                     level,
                     label: self.label,
@@ -225,17 +215,19 @@ public struct MELogger {
         }
         
         // My destinations
-        self.destinations.forEach {
-            $0.log(
-                level,
-                label: self.label,
-                with: ($0.settings.isTimestampEnabled ? "[\($0.currentTimestamp)] " : "") + message(),
-                metadata: metadata(),
-                error: error,
-                file: file,
-                line: line,
-                function: function
-            )
+        if let destinations = self.destinationManager, destinations.isEnabled() {
+            destinations.getDestinations().forEach {
+                $0.log(
+                    level,
+                    label: self.label,
+                    with: ($0.settings.isTimestampEnabled ? "[\($0.currentTimestamp)] " : "") + message(),
+                    metadata: metadata(),
+                    error: error,
+                    file: file,
+                    line: line,
+                    function: function
+                )
+            }
         }
     }
 }

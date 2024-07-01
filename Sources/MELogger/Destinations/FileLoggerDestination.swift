@@ -1,7 +1,9 @@
 import Foundation
 
 /// Logs messages to a file stored on the local device
-public struct FileLoggerDestination: MELoggerDestination {
+///
+/// - Warning: Use this with care; if not handled properly unauthorized users could gain access to these log file. This may or may not be a problem, but you should definitely keep that in mind! Generally I'd recommend allowing this only on internal builds.
+public class FileLoggerDestination: MELoggerDestination {
 
     // MARK: - Properties
     
@@ -114,8 +116,8 @@ public struct FileLoggerDestination: MELoggerDestination {
     }
     
     /// The shared output stream
-    private static var sharedStream: FileOutputStream?
-    
+    private var sharedStream: FileOutputStream?
+
     /// Rotation semaphore
     private static let logFileActivitySemaphore = DispatchSemaphore(value: 1)
 
@@ -229,7 +231,7 @@ public struct FileLoggerDestination: MELoggerDestination {
         self.rotateLogsIfNeeded()
         
         // Write to file
-        FileLoggerDestination.sharedStream?.write("\(level.prefix) \(message()) \(metadataString)\n")
+        self.sharedStream?.write("\(level.prefix) \(message()) \(metadataString)\n")
     }
     
     /// Get URLs for each log file that exists on the file system
@@ -264,13 +266,13 @@ public struct FileLoggerDestination: MELoggerDestination {
         // Wait for other threads...
         FileLoggerDestination.logFileActivitySemaphore.wait()
         
-        guard let stream = FileLoggerDestination.sharedStream else {
+        guard let stream = self.sharedStream else {
 
             FileLoggerDestination.logFileActivitySemaphore.signal()
             return
         }
         stream.close()
-        FileLoggerDestination.sharedStream = nil
+        self.sharedStream = nil
 
         // Remove all
         for fileToRemove in self.getLogFiles() {
@@ -291,11 +293,11 @@ private extension FileLoggerDestination {
     /// Create my logger stream
     func createStream() {
 
-        guard FileLoggerDestination.sharedStream == nil else { return }
+        guard self.sharedStream == nil else { return }
         do {
 
             let stream = try FileOutputStream(with: self.internalSettings)
-            FileLoggerDestination.sharedStream = stream
+            self.sharedStream = stream
         } catch let error {
             assertionFailure("File Logger could not initialize the file: \(error.localizedDescription)")
         }
@@ -307,7 +309,7 @@ private extension FileLoggerDestination {
         // Wait for other threads...
         FileLoggerDestination.logFileActivitySemaphore.wait()
         
-        guard let stream = FileLoggerDestination.sharedStream else {
+        guard let stream = self.sharedStream else {
 
             FileLoggerDestination.logFileActivitySemaphore.signal()
             return
@@ -318,8 +320,8 @@ private extension FileLoggerDestination {
             return
         }
         stream.close()
-        FileLoggerDestination.sharedStream = nil
-        
+        self.sharedStream = nil
+
         // Delete the last rotation
         if let fileToRemove = File.rotation(number: self.internalSettings.logFileRotationsKept).getUrl(for: self.internalSettings) {
             try? FileManager.default.removeItem(at: fileToRemove)

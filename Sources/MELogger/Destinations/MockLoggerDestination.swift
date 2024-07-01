@@ -53,10 +53,7 @@ public class MockLoggerDestination: MELoggerDestination {
 
     /// Initializer
     public init(settings: Settings = Settings()) {
-
         self.settings = settings
-        // By default, mock logger disables shared destinations
-        MELogger.sharedDestinations = []
     }
     
     /// Logs to the destination
