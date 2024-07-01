@@ -19,8 +19,10 @@ final public class MELoggerDestinationManager: @unchecked Sendable {
     /// The shared instance of the destination manager
     ///
     /// This manages shared log destinations.
-    static let shared = MELoggerDestinationManager(
-        destinations: []
+    public static let shared = MELoggerDestinationManager(
+        destinations: [
+            ConsoleLoggerDestination()
+        ]
     )
 
     /// Set to true if these destinations are enabled
