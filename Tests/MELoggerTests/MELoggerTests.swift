@@ -17,7 +17,7 @@ class MELoggerTests: XCTestCase {
 
         super.setUp()
 
-        let localLogDestinations = LoggerDestinationManager(
+        let localLogDestinations = MELoggerDestinationManager(
             destinations: [self.mockLogDestination]
         )
 
@@ -25,10 +25,10 @@ class MELoggerTests: XCTestCase {
         self.mockLogger = MELogger(label: "Mock logger", destinationManager: localLogDestinations)
         self.mockLogDestination.reset()
 
-        self.existingSharedEnabled = LoggerDestinationManager.shared.isEnabled()
-        self.existingSharedDestinations = LoggerDestinationManager.shared.getDestinations()
-        LoggerDestinationManager.shared.removeAll()
-        LoggerDestinationManager.shared.enable(true)
+        self.existingSharedEnabled = MELoggerDestinationManager.shared.isEnabled()
+        self.existingSharedDestinations = MELoggerDestinationManager.shared.getDestinations()
+        MELoggerDestinationManager.shared.removeAll()
+        MELoggerDestinationManager.shared.enable(true)
     }
 
     override func tearDownWithError() throws {
@@ -36,9 +36,9 @@ class MELoggerTests: XCTestCase {
         // Reset and disable log
         self.mockLogDestination.reset()
         self.mockLogDestination.settings.isEnabled = false
-        LoggerDestinationManager.shared.removeAll()
-        LoggerDestinationManager.shared.add(self.existingSharedDestinations)
-        LoggerDestinationManager.shared.enable(self.existingSharedEnabled)
+        MELoggerDestinationManager.shared.removeAll()
+        MELoggerDestinationManager.shared.add(self.existingSharedDestinations)
+        MELoggerDestinationManager.shared.enable(self.existingSharedEnabled)
     }
 
     func testLoggerSettings() {
@@ -99,7 +99,7 @@ class MELoggerTests: XCTestCase {
                 minimumLevel: .warning
             )
         )
-        LoggerDestinationManager.shared.add(anotherMockLogDestination)
+        MELoggerDestinationManager.shared.add(anotherMockLogDestination)
         
         // None sent to another; but one sent to log destination
         self.mockLogger.debug("Another debug message")
@@ -122,7 +122,7 @@ class MELoggerTests: XCTestCase {
 
         let settings = ConsoleLoggerDestination.Settings(isEnabled: true)
         let consoleLoggerDestination = ConsoleLoggerDestination(settings: settings)
-        LoggerDestinationManager.shared.add(consoleLoggerDestination)
+        MELoggerDestinationManager.shared.add(consoleLoggerDestination)
         
         consoleLoggerDestination.log(.notice, label: "console.destination.test", with: "Testing a notice console message", metadata: ["metadatakey": "Meta data value"], error: nil, file: "MELoggerTests.swift", line: 83, function: "testConsoleLoggerDestination")
         
@@ -137,7 +137,7 @@ class MELoggerTests: XCTestCase {
         fileLoggerDestination.clearLogFiles()
         XCTAssertEqual(1, fileLoggerDestination.getLogFiles().count)
 
-        LoggerDestinationManager.shared.add(fileLoggerDestination)
+        MELoggerDestinationManager.shared.add(fileLoggerDestination)
         self.mockLogger.warning("Warning message to file")
         
         guard let currentUrl = FileLoggerDestination.File.current.getUrl(for: settings), let firstRotationUrl = FileLoggerDestination.File.rotation(number: 1).getUrl(for: settings) else {

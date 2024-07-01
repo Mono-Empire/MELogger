@@ -14,12 +14,14 @@ let package = Package(
     targets: [
         .target(
             name: "MELogger",
+            exclude: ["Samples"],
             swiftSettings: [
                 .enableExperimentalFeature("StrictConcurrency")
             ]
         ),
         .testTarget(
             name: "MELoggerTests",
-            dependencies: ["MELogger"]),
+            dependencies: ["MELogger"]
+        ),
     ]
 )

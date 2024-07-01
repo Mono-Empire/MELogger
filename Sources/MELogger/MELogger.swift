@@ -61,7 +61,7 @@ public struct MELogger {
     /// Destinations for logging, specific to this logger
     ///
     /// If nil, it means there are no additional destinations.
-    let destinationManager: LoggerDestinationManager?
+    let destinationManager: MELoggerDestinationManager?
 
     // MARK: - Public Methods
 
@@ -70,7 +70,7 @@ public struct MELogger {
     /// - Parameter destinationManager: An optional set of log destinations such as the console, a file, etc. specific to this logger. If left nil (the default) the shared destinations will be used.
     public init(
         label: String,
-        destinationManager: LoggerDestinationManager? = nil
+        destinationManager: MELoggerDestinationManager? = nil
     ) {
         
         self.label = label
@@ -199,8 +199,8 @@ public struct MELogger {
     ) {
                 
         // Shared destinations
-        if LoggerDestinationManager.shared.isEnabled() {
-            LoggerDestinationManager.shared.getDestinations().forEach {
+        if MELoggerDestinationManager.shared.isEnabled() {
+            MELoggerDestinationManager.shared.getDestinations().forEach {
                 $0.log(
                     level,
                     label: self.label,

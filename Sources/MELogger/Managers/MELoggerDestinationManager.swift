@@ -1,7 +1,10 @@
 import Foundation
 
+@available(*, deprecated, renamed: "MELoggerDestinationManager")
+typealias LoggerDestinationManager = MELoggerDestinationManager
+
 /// Managers the log destinations to be used throughout your app
-final public class LoggerDestinationManager: @unchecked Sendable {
+final public class MELoggerDestinationManager: @unchecked Sendable {
 
     private static let instanceId = UUID()
 
@@ -16,7 +19,7 @@ final public class LoggerDestinationManager: @unchecked Sendable {
     /// The shared instance of the destination manager
     ///
     /// This manages shared log destinations.
-    static let shared = LoggerDestinationManager(
+    static let shared = MELoggerDestinationManager(
         destinations: []
     )
 
