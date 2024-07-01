@@ -1,7 +1,9 @@
 # MELogger
 
-Installation
---------------
+[![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2FMono-Empire%2FMELogger%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/Mono-Empire/MELogger)
+[![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2FMono-Empire%2FMELogger%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/Mono-Empire/MELogger)
+
+## Installation
 
 You can install the package under your `Project / Package Dependencies` settings. Or if you are specifying it as a dependency for another package you can add the dependency in `Package.swift`:
 
@@ -9,7 +11,7 @@ You can install the package under your `Project / Package Dependencies` settings
     dependencies: [
         .package(
             url: "git@github.com:Mono-Empire/MELogger.git",
-            from: Version("1.0.0")
+            from: Version("2.0.2")
         )
     ],
     targets: [
@@ -26,8 +28,7 @@ You can install the package under your `Project / Package Dependencies` settings
     ]
     //...
 
-Basic usage
---------------
+## Basic usage
 
 Provides a generalized logging interface very similar to `SwiftLog`.  Allows logging to console, to a file, or to any other custom destination (such as a cloud service, Slack, etc.). 
 
@@ -55,10 +56,9 @@ You have the following available levels:
 * error
 * critical
 
-By default error and critical will also trigger assertionFailure(), but this behavior can be changed by modifying the default console log destination (see below).
+By default, error will also trigger assertionFailure() and critical will trigger a fatalError(), but this behavior can be changed by modifying the default console log destination (see below).
 
-Specify log destinations
-----------------------------
+## Specify log destinations
 
 Each logger instance can be set up with one or more logging destinations - so for example, log messages can be sent to both the console and to a log file. For each destination you can set what level to log, and also a number of other destination-specific settings like log file size and rotation preferences.
 
@@ -69,10 +69,10 @@ Here's an example of setting up logging to a file:
     let fileLoggerDestination = FileLoggerDestination(settings: settings)
     
     // Add the destination to an existing logger instance...
-    logger.destinations.append(fileLoggerDestination)
+    logger.destinationManager.add(fileLoggerDestination)
     
     // ...or you can add the destination to all logger instances:
-    Logger.sharedDestinations.append(fileLoggerDestination)
+    MELoggerDestinationManager.shared.add(fileLoggerDestination)
     
 The destination object also provides useful methods to manage log files:
 
@@ -84,15 +84,23 @@ The destination object also provides useful methods to manage log files:
 
 
 
-Custom log destinations
-----------------------------
+## Custom log destinations
 
-You can also write your own custom logging destinations, such as logging to a cloud service. Simply implement a new `struct` that conforms to `LoggerDestination`. See the existing destinations in this package as examples.
+You can also write your own custom logging destinations, such as logging to a cloud service. Simply implement a new `struct` that conforms to `MELoggerDestination`.
 
-If generally useful, consider contributing it to this package.
+As an example, see `CrashlyticsLoggerDestination` here. Not all of your packages will have Crashlytics dependencies, but it is enough to just to add the `CrashlyticsLoggerDestination` once to your shared destinations:
 
-Testing with MockLoggerDestination
-------------------------------------------
+    // For example, in your AppDelegate's didFinishLaunchingWithOptions...
+    
+    // Initialize Firebase
+    FirebaseApp.configure()
+
+    // Add Crashlytics destination
+    MELoggerDestinationManager.shared.add(CrashlyticsLoggerDestination())
+
+Now that you have `CrashlyticsLoggerDestination` as a shared destination even the relevant log messages from sub-packages that do not have Firebase dependencies will be sent to Crashlytics.
+
+## Testing with MockLoggerDestination
 
 In certain cases it may be useful to test error cases in your code using the `MockLoggerDestination`.  This log destination allows you to access any previous log messages for your assertions. For example in your tests: 
 
@@ -100,7 +108,8 @@ In certain cases it may be useful to test error cases in your code using the `Mo
     
     // Create and add mock destination
     let mockLogDestination = MockLogDestination()
-    Logger.sharedDestinations.append(mockLogDestination)
+    MELoggerDestinationManager.shared.removeAll()
+    MELoggerDestinationManager.shared.add(mockLogDestination)
     
     // Do something illegal
     let myExample = Example()
@@ -109,4 +118,4 @@ In certain cases it may be useful to test error cases in your code using the `Mo
     // Check if it was illegal
     XCTAssertEqual(anotherMockLogDestination.lastLoggedLevel, .warning)
     XCTAssertFalse(anotherMockLogDestination.loggedMessages.isEmpty)
-    XCTAssertEqual(anotherMockLogDestination.lastLoggedMessage, "Something illegal")
+    XCTAssertEqual(anotherMockLogDestination.lastLoggedMessage, "The warning message")
