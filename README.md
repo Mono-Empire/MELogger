@@ -84,3 +84,15 @@ In certain cases it may be useful to test error cases in your code using the `Mo
     XCTAssertEqual(anotherMockLogDestination.lastLoggedLevel, .warning)
     XCTAssertFalse(anotherMockLogDestination.loggedMessages.isEmpty)
     XCTAssertEqual(anotherMockLogDestination.lastLoggedMessage, "Something illegal")
+
+Changelog
+-------------
+
+**1.0**
+
+Initial release
+
+**1.1**
+
+- Moved assertion failure configuration to the logger instance initializer (console logger destination config is now deprecated)
+- All log levels now accept an optional `error` parameter (it used to be limited to `.error` and up)

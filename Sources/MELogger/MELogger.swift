@@ -95,66 +95,76 @@ public struct MELogger {
     /// Appropriate for messages that contain information normally of use only when tracing the execution
     /// - Parameter message: The text that will be displayed in the console
     /// - Parameter metadata: A key/value (both strings) dictionary of metadata to send along with the message
+    /// - Parameter error: Optionally you can also pass an `Error` which may be processed by some destinations
     public func trace(
         _ message: @autoclosure () -> Message,
         metadata: @autoclosure () -> Metadata = [:],
+        error: Error? = nil,
         file: String = #fileID,
         line: Int = #line,
         function: String = #function
     ) {
-        self.log(.trace, with: message(), metadata: metadata(), file: file, line: line, function: function)
+        self.log(.trace, with: message(), metadata: metadata(), error: error, file: file, line: line, function: function)
     }
 
     /// Appropriate for messages that contain information normally of use only when debugging
     /// - Parameter message: The text that will be displayed in the console
     /// - Parameter metadata: A key/value (both strings) dictionary of metadata to send along with the message
+    /// - Parameter error: Optionally you can also pass an `Error` which may be processed by some destinations
     public func debug(
         _ message: @autoclosure () -> Message,
         metadata: @autoclosure () -> Metadata = [:],
+        error: Error? = nil,
         file: String = #fileID,
         line: Int = #line,
         function: String = #function
     ) {
-        self.log(.debug, with: message(), metadata: metadata(), file: file, line: line, function: function)
+        self.log(.debug, with: message(), metadata: metadata(), error: error, file: file, line: line, function: function)
     }
     
     /// Appropriate for informational messages
     /// - Parameter message: The text that will be displayed in the console
     /// - Parameter metadata: A key/value (both strings) dictionary of metadata to send along with the message
+    /// - Parameter error: Optionally you can also pass an `Error` which may be processed by some destinations
     public func info(
         _ message: @autoclosure () -> Message,
         metadata: @autoclosure () -> Metadata = [:],
+        error: Error? = nil,
         file: String = #fileID,
         line: Int = #line,
         function: String = #function
     ) {
-        self.log(.info, with: message(), metadata: metadata(), file: file, line: line, function: function)
+        self.log(.info, with: message(), metadata: metadata(), error: error, file: file, line: line, function: function)
     }
     
     /// Appropriate for conditions that are not error conditions, but that may require special handling
     /// - Parameter message: The text that will be displayed in the console
     /// - Parameter metadata: A key/value (both strings) dictionary of metadata to send along with the message
+    /// - Parameter error: Optionally you can also pass an `Error` which may be processed by some destinations
     public func notice(
         _ message: @autoclosure () -> Message,
         metadata: @autoclosure () -> Metadata = [:],
+        error: Error? = nil,
         file: String = #fileID,
         line: Int = #line,
         function: String = #function
     ) {
-        self.log(.notice, with: message(), metadata: metadata(), file: file, line: line, function: function)
+        self.log(.notice, with: message(), metadata: metadata(), error: error, file: file, line: line, function: function)
     }
     
     /// Appropriate for messages that are not error conditions, but more severe than notice
     /// - Parameter message: The text that will be displayed in the console
     /// - Parameter metadata: A key/value (both strings) dictionary of metadata to send along with the message
+    /// - Parameter error: Optionally you can also pass an `Error` which may be processed by some destinations
     public func warning(
         _ message: @autoclosure () -> Message,
         metadata: @autoclosure () -> Metadata = [:],
+        error: Error? = nil,
         file: String = #fileID,
         line: Int = #line,
         function: String = #function
     ) {
-        self.log(.warning, with: message(), metadata: metadata(), file: file, line: line, function: function)
+        self.log(.warning, with: message(), metadata: metadata(), error: error, file: file, line: line, function: function)
     }
     
     /// Appropriate for error conditions
