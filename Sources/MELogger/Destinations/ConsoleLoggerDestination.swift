@@ -20,6 +20,7 @@ public struct ConsoleLoggerDestination: MELoggerDestination {
         /// The minimum level at which we throw assertion failures
         ///
         /// Useful for development because high level log messages require immediate attention. The recommended value is `.error`, but can also be set to nil to disable this feature for all levels.
+        @available(*, deprecated, message: "Use the init parameter `MeLogger(throwAssertionFailureLogLevels: [.error, .critical])` instead")
         public var minimumLevelForAssertionFailures: MELogger.Level?
 
         /// Limits console messages to this many characters
@@ -32,7 +33,7 @@ public struct ConsoleLoggerDestination: MELoggerDestination {
             isEnabled: Bool = true,
             isTimestampEnabled: Bool = true,
             minimumLevel: MELogger.Level = .info,
-            minimumLevelForAssertionFailures: MELogger.Level? = .error,
+            minimumLevelForAssertionFailures: MELogger.Level? = nil,
             maximumMessageLength: Int? = 1000
         ) {
 

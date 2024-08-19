@@ -29,7 +29,7 @@ You have the following available levels:
 * error
 * critical
 
-By default error and critical will also trigger assertionFailure(), but this behavior can be changed by modifying the default console log destination (see below).
+By default error and critical will also trigger assertionFailure(), but this behavior can be changed by modifying the `throwAssertionFailureLogLevels` parameter when you create a `MELogger` instance.
 
 Specify log destinations
 ----------------------------

@@ -64,6 +64,9 @@ public struct MELogger {
     /// Shared destinations enabled
     let sharedDestinationsEnabled: Bool
     
+    /// An assertion failure (which triggers a crash for debug builds) will be thrown for these log levels
+    let throwAssertionFailureLogLevels: [Level]
+    
     /// Destinations shared among all loggers
     ///
     /// Defaults to logging to console.
@@ -75,15 +78,18 @@ public struct MELogger {
     /// - Parameter label: The label displayed when logging (can be the name of the component)
     /// - Parameter destinations: An optional list of log destinations such as the console, a file, etc. specific to this logger
     /// - Parameter sharedDestinationsEnabled: If set to true (the default) log messages will be sent to shared destinations as well. You should leave this true unless you want something specific or are for example using a logger for unit tests.
+    /// - Parameter throwAssertionFailureLogLevels: An assertion failure (which triggers a crash for debug builds) will be thrown for these log levels. Defaults to everything above `error`.
     public init(
         label: String,
         destinations: [MELoggerDestination] = [],
-        sharedDestinationsEnabled: Bool = true
+        sharedDestinationsEnabled: Bool = true,
+        throwAssertionFailureLogLevels: [Level] = [.error, .critical]
     ) {
         
         self.label = label
         self.destinations = destinations
         self.sharedDestinationsEnabled = sharedDestinationsEnabled
+        self.throwAssertionFailureLogLevels = throwAssertionFailureLogLevels
     }
 
     /// Appropriate for messages that contain information normally of use only when tracing the execution
@@ -236,6 +242,11 @@ public struct MELogger {
                 line: line,
                 function: function
             )
+        }
+        
+        // Throw assertion failures?
+        if self.throwAssertionFailureLogLevels.contains(level) {
+            assertionFailure(message())
         }
     }
 }
