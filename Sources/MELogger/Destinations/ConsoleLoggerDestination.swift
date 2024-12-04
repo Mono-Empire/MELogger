@@ -16,11 +16,6 @@ public struct ConsoleLoggerDestination: MELoggerDestination {
 
         /// The minimum level at which we log to the destination
         public var minimumLevel: MELogger.Level
-        
-        /// The minimum level at which we throw assertion failures
-        ///
-        /// Useful for development because high level log messages require immediate attention. The recommended value is `.error`, but can also be set to nil to disable this feature for all levels.
-        public var minimumLevelForAssertionFailures: MELogger.Level?
 
         /// Limits console messages to this many characters
         ///
@@ -32,14 +27,12 @@ public struct ConsoleLoggerDestination: MELoggerDestination {
             isEnabled: Bool = true,
             isTimestampEnabled: Bool = true,
             minimumLevel: MELogger.Level = .info,
-            minimumLevelForAssertionFailures: MELogger.Level? = .error,
             maximumMessageLength: Int? = 1000
         ) {
 
             self.isEnabled = isEnabled
             self.isTimestampEnabled = isTimestampEnabled
             self.minimumLevel = minimumLevel
-            self.minimumLevelForAssertionFailures = minimumLevelForAssertionFailures
             self.maximumMessageLength = maximumMessageLength
         }
     }
@@ -87,12 +80,5 @@ public struct ConsoleLoggerDestination: MELoggerDestination {
         }
 
         print("\(level.prefix) \(messageString) \(metadataString)")
-        
-        // Throw assertion failure above level
-        if let settings = self.settings as? ConsoleLoggerDestination.Settings,
-           let minimumLevelForAssertionFailures = settings.minimumLevelForAssertionFailures,
-           level.rawValue >= minimumLevelForAssertionFailures.rawValue {
-            assertionFailure(message())
-        }
     }
 }
