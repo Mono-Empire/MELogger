@@ -36,17 +36,17 @@ public class MockLoggerDestination: MELoggerDestination {
     public var loggedLevels: [MELogger.Level] = []
     public var loggedMessages: [MELogger.Message] = []
     public var loggedMetadata: [MELogger.Metadata] = []
-    public var loggedFiles: [String] = []
-    public var loggedLines: [Int] = []
-    public var loggedFunctions: [String] = []
+    public var loggedFiles: [StaticString] = []
+    public var loggedLines: [UInt] = []
+    public var loggedFunctions: [StaticString] = []
     public var loggedLabels: [String] = []
     public var loggedErrors: [Error?] = []
     public var lastLoggedLevel: MELogger.Level? { self.loggedLevels.last }
     public var lastLoggedMessage: MELogger.Message? { self.loggedMessages.last }
     public var lastLoggedMetadata: MELogger.Metadata? { self.loggedMetadata.last }
-    public var lastLoggedFile: String? { self.loggedFiles.last }
-    public var lastLoggedLine: Int? { self.loggedLines.last }
-    public var lastLoggedFunction: String? { self.loggedFunctions.last }
+    public var lastLoggedFile: StaticString? { self.loggedFiles.last }
+    public var lastLoggedLine: UInt? { self.loggedLines.last }
+    public var lastLoggedFunction: StaticString? { self.loggedFunctions.last }
     public var lastLoggedLabels: String? { self.loggedLabels.last }
     public var lastLoggedError: Error? { self.loggedErrors.last ?? nil }
     public var lastLogWasAllowed: Bool?
@@ -63,9 +63,9 @@ public class MockLoggerDestination: MELoggerDestination {
         with message: @autoclosure () -> MELogger.Message,
         metadata: @autoclosure () -> MELogger.Metadata,
         error: Error?,
-        file: String,
-        line: Int,
-        function: String
+        file: StaticString,
+        line: UInt,
+        function: StaticString
     ) {
 
         guard self.settings.allowsLogging(at: level) else {

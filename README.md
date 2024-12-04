@@ -11,7 +11,7 @@ You can install the package under your `Project / Package Dependencies` settings
     dependencies: [
         .package(
             url: "git@github.com:Mono-Empire/MELogger.git",
-            from: Version("2.0.2")
+            from: Version("3.0.0")
         )
     ],
     targets: [
@@ -43,7 +43,7 @@ Usage is simple:
     // ...you can add some meta-data too:
     logger.notice("This is just a notice", metadata: ['class': 'MyClassName'])
     
-    // For error and critical, you can also pass an optional `Error`
+    // For all levels you can also pass an optional `Error` (though obviously more common for things like `error` or `critical`)
     logger.error("Something bad happened!", error: err)
 
 You have the following available levels:
@@ -55,8 +55,6 @@ You have the following available levels:
 * warning
 * error
 * critical
-
-By default, error will also trigger assertionFailure() and critical will trigger a fatalError(), but this behavior can be changed by modifying the default console log destination (see below).
 
 ## Specify log destinations
 
@@ -82,7 +80,17 @@ The destination object also provides useful methods to manage log files:
     // Clear the log files
     fileLoggerDestination.clearLogFiles()
 
+## Built-in log destinations
 
+By default, MELogger provides a set of useful logging destinations out of the box:
+
+- ConsoleLoggerDestination - logs messages to the standard console; supports a formatted output, message truncating, etc.
+- FileLoggerDestination - saves log messages to a file; supports file rotation, maximum file sizes, etc.
+- CrashlyticsLoggerDestination - sends your logs to Crashlytics (see custom log destinations explanation below)
+- AssertionFailureDestination - triggers an assertionFailure (which will pause execution in Xcode's Debug mode) with the logged message; great for surfacing errors instead of just having them silently fail in the logs
+- MockLoggerDestination - a destination aimed at unit testing (see the section below for more info)  
+
+See the `Settings` of each destination for more info on what each supports.
 
 ## Custom log destinations
 

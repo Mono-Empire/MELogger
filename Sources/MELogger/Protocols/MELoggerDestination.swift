@@ -54,8 +54,8 @@ public protocol MELoggerDestination {
     ///   - file: The file name
     ///   - line: Line number
     ///   - function: Function name
-    func log(_ level: MELogger.Level, label: String, with message: @autoclosure () -> MELogger.Message, metadata: @autoclosure () -> MELogger.Metadata, error: Error?, file: String, line: Int, function: String)
-    
+    func log(_ level: MELogger.Level, label: String, with message: @autoclosure () -> MELogger.Message, metadata: @autoclosure () -> MELogger.Metadata, error: Error?, file: StaticString, line: UInt, function: StaticString)
+
 }
 
 /// Internal implementation for logger destination

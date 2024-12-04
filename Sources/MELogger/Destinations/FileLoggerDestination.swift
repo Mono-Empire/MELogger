@@ -212,9 +212,9 @@ public class FileLoggerDestination: MELoggerDestination {
         with message: @autoclosure () -> MELogger.Message,
         metadata: @autoclosure () -> MELogger.Metadata,
         error: Error?,
-        file: String,
-        line: Int,
-        function: String
+        file: StaticString,
+        line: UInt,
+        function: StaticString
     ) {
 
         guard self.settings.allowsLogging(at: level) else { return }
